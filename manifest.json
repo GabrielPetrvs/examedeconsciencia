@@ -1,0 +1,24 @@
+{
+  "name": "Exame de Consciência",
+  "short_name": "Confissão",
+  "description": "Exame de consciência para a santa confissão sacramental",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#2a1a0e",
+  "theme_color": "#2a1a0e",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='24' fill='%232a1a0e'/%3E%3Crect x='84' y='24' width='24' height='144' rx='8' fill='%23b8962e'/%3E%3Crect x='36' y='60' width='120' height='24' rx='8' fill='%23b8962e'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='64' fill='%232a1a0e'/%3E%3Crect x='224' y='64' width='64' height='384' rx='20' fill='%23b8962e'/%3E%3Crect x='96' y='160' width='320' height='64' rx='20' fill='%23b8962e'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
