@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Exame de Consciência</title>
+
+  <!-- Favicon: cross SVG inline as data URI -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%232a1a0e'/%3E%3Crect x='28' y='8' width='8' height='48' rx='3' fill='%23b8962e'/%3E%3Crect x='12' y='20' width='40' height='8' rx='3' fill='%23b8962e'/%3E%3C/svg%3E" />
+
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
@@ -27,11 +31,10 @@
       background: var(--brown-dark);
       color: var(--brown-dark);
       min-height: 100vh;
-      background-image:
-        radial-gradient(ellipse at 50% 0%, #3d2210 0%, var(--brown-dark) 60%);
+      background-image: radial-gradient(ellipse at 50% 0%, #3d2210 0%, var(--brown-dark) 60%);
     }
 
-    /* ── Header ── */
+    /* Header */
     header {
       background: linear-gradient(180deg, #1a0f07 0%, #2a1a0e 100%);
       border-bottom: 2px solid var(--gold-dim);
@@ -69,7 +72,7 @@
       opacity: 0.85;
     }
 
-    /* ── Date bar ── */
+    /* Date bar */
     .date-bar {
       background: var(--parchment);
       border-bottom: 1px solid #d4b87a;
@@ -105,14 +108,13 @@
       box-shadow: 0 0 0 2px rgba(184,150,46,0.2);
     }
 
-    /* ── Main ── */
+    /* Main */
     main {
       max-width: 820px;
       margin: 0 auto;
-      padding: 28px 16px 100px;
+      padding: 28px 16px 20px;
     }
 
-    /* ── Intro card ── */
     .intro-card {
       background: var(--cream);
       border: 1px solid #d0b882;
@@ -124,10 +126,9 @@
       line-height: 1.7;
       color: var(--brown-mid);
     }
-
     .intro-card strong { color: var(--brown-dark); }
 
-    /* ── Section ── */
+    /* Section */
     .section {
       margin-bottom: 22px;
       border-radius: 5px;
@@ -149,7 +150,7 @@
 
     .section-body { background: var(--cream); }
 
-    /* ── Sin item ── */
+    /* Sin item */
     .sin-item {
       display: flex;
       align-items: flex-start;
@@ -160,7 +161,6 @@
     }
 
     .sin-item:last-child { border-bottom: none; }
-
     .sin-item:hover { background: #f5edd8; }
 
     .sin-item.marked {
@@ -191,8 +191,7 @@
     .sin-checkbox:checked::after {
       content: '✓';
       position: absolute;
-      top: -1px;
-      left: 2px;
+      top: -1px; left: 2px;
       color: white;
       font-size: 14px;
       font-weight: bold;
@@ -245,27 +244,106 @@
       color: #bbb;
     }
 
-    /* ── Sticky bottom bar ── */
-    .bottom-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(0deg, #1a0f07 0%, #2a1a0e 100%);
-      border-top: 2px solid var(--gold-dim);
-      padding: 12px 20px;
+    /* Atos de Contrição */
+    .atos-wrap {
+      max-width: 820px;
+      margin: 0 auto 10px;
+      padding: 0 16px;
+    }
+
+    .atos-header {
+      background: linear-gradient(90deg, #5a0a0a 0%, var(--red-church) 100%);
+      color: #f5dada;
+      font-family: 'Cinzel', serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 13px 20px;
+      border-left: 4px solid #e87070;
+      border-radius: 5px 5px 0 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .atos-body {
+      background: var(--cream);
+      border: 1px solid #d8b8b8;
+      border-top: none;
+      border-radius: 0 0 5px 5px;
+      overflow: hidden;
+    }
+
+    .ato-tab {
+      width: 100%;
+      background: var(--parchment);
+      border: none;
+      border-bottom: 1px solid #d8b8b8;
+      padding: 11px 20px;
+      text-align: left;
+      font-family: 'Cinzel', serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--red-church);
+      letter-spacing: 0.07em;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.15s;
+    }
+
+    .ato-tab:last-of-type { border-bottom: none; }
+    .ato-tab:hover { background: #ede0d0; }
+    .ato-tab.open { background: #f8ece8; }
+
+    .chevron {
+      font-size: 0.68rem;
+      color: var(--brown-light);
+      transition: transform 0.2s;
+    }
+
+    .ato-tab.open .chevron { transform: rotate(180deg); }
+
+    .ato-content {
+      display: none;
+      padding: 18px 24px 20px;
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: var(--brown-mid);
+      font-style: italic;
+      border-top: 1px solid #e8d8d8;
+      background: #fffaf8;
+    }
+
+    .ato-content.open { display: block; }
+    .ato-content p { margin-bottom: 10px; }
+    .ato-content p:last-child { margin-bottom: 0; }
+
+    /* Action bar (bottom, inline) */
+    .action-bar {
+      max-width: 820px;
+      margin: 28px auto 52px;
+      padding: 0 16px;
+    }
+
+    .action-bar-inner {
+      background: linear-gradient(135deg, #1a0f07 0%, #2a1a0e 100%);
+      border: 1px solid var(--gold-dim);
+      border-radius: 6px;
+      padding: 18px 24px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 14px;
+      gap: 16px;
       flex-wrap: wrap;
-      z-index: 200;
-      box-shadow: 0 -4px 24px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
     }
 
     .counter-badge {
       font-family: 'Cinzel', serif;
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       color: #c4a97a;
       letter-spacing: 0.05em;
     }
@@ -273,7 +351,7 @@
     .counter-badge span {
       color: var(--gold-light);
       font-weight: 700;
-      font-size: 1.05rem;
+      font-size: 1.1rem;
     }
 
     .btn {
@@ -284,7 +362,7 @@
       text-transform: uppercase;
       border: none;
       border-radius: 3px;
-      padding: 9px 20px;
+      padding: 10px 22px;
       cursor: pointer;
       transition: all 0.18s;
     }
@@ -324,7 +402,7 @@
       background: rgba(184,150,46,0.08);
     }
 
-    /* ── Modal ── */
+    /* Modal */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -365,13 +443,79 @@
       margin-bottom: 22px;
     }
 
-    .modal-btns {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
+    .modal-btns { display: flex; gap: 12px; justify-content: center; }
+
+    .modal-wide { max-width: 540px; }
+
+    /* History list */
+    .history-list {
+      max-height: 320px;
+      overflow-y: auto;
+      margin-top: 4px;
     }
 
-    /* ── Toast ── */
+    .history-empty {
+      text-align: center;
+      font-style: italic;
+      color: var(--brown-light);
+      padding: 24px 0;
+      font-size: 0.95rem;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid #e8dfc8;
+      gap: 12px;
+    }
+
+    .history-item:last-child { border-bottom: none; }
+
+    .history-item:nth-child(odd) { background: #f5edd8; }
+
+    .history-num {
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      color: var(--brown-light);
+      min-width: 22px;
+    }
+
+    .history-cross {
+      color: var(--red-church);
+      font-size: 1rem;
+    }
+
+    .history-date {
+      flex: 1;
+      font-family: 'Cinzel', serif;
+      font-size: 0.92rem;
+      color: var(--brown-dark);
+      font-weight: 600;
+    }
+
+    .history-days {
+      font-size: 0.85rem;
+      color: var(--brown-light);
+      font-style: italic;
+      white-space: nowrap;
+    }
+
+    .history-del {
+      background: none;
+      border: none;
+      color: #c08080;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 2px 6px;
+      border-radius: 3px;
+      transition: background 0.15s;
+    }
+
+    .history-del:hover { background: #f8e8e8; color: var(--red-church); }
+
+    /* Toast */
     #toast {
       position: fixed;
       top: 80px;
@@ -414,29 +558,99 @@
 <div class="date-bar">
   <label for="confDate">Data da Confissão:</label>
   <input type="date" id="confDate" />
+  <div id="lastConfInfo" style="display:none; font-family:'Cinzel',serif; font-size:0.8rem; color:var(--brown-mid); letter-spacing:0.04em; border-left:2px solid var(--gold-dim); padding-left:12px;">
+    Última confissão: <strong id="lastConfDate"></strong> — <span id="lastConfDays" style="color:var(--red-church); font-weight:600;"></span>
+  </div>
 </div>
 
 <main id="main-content">
   <div class="intro-card">
-    <strong>Como usar:</strong> Marque cada pecado cometido desde sua última confissão e informe a quantidade de vezes. Ao final, gere o relatório em PDF para levar ao confessionário.
+    <strong>Como usar:</strong> Marque cada pecado cometido desde sua última confissão e informe a quantidade de vezes. Ao final da página, consulte os atos de contrição e gere o relatório em PDF.
   </div>
-  <!-- sections injected by JS -->
 </main>
 
-<div class="bottom-bar">
-  <div class="counter-badge">Marcados: <span id="count">0</span></div>
-  <button class="btn btn-gold" onclick="exportPDF()">⬇ Gerar PDF</button>
-  <button class="btn btn-outline" onclick="openReset()">↺ Novo Exame</button>
+<!-- Atos de Contrição -->
+<div class="atos-wrap">
+  <div class="atos-header">
+    <span>✝</span> Atos de Contrição
+  </div>
+  <div class="atos-body">
+
+    <button class="ato-tab" onclick="toggleAto(this)">
+      Ato de Contrição — Forma Breve (do documento)
+      <span class="chevron">▼</span>
+    </button>
+    <div class="ato-content">
+      <p>Meu Jesus Crucificado por minha culpa, estou muito arrependido(a) de ter feito pecado, pois ofendi a Vós que sois tão bom e mereci ser castigado(a) neste mundo e no outro. Mas perdoai-me, Senhor, não quero mais pecar. Amém.</p>
+    </div>
+
+    <button class="ato-tab" onclick="toggleAto(this)">
+      Ato de Contrição — Forma Tradicional
+      <span class="chevron">▼</span>
+    </button>
+    <div class="ato-content">
+      <p>Meu Deus, porque sois infinitamente bom, e o pecado Vos desagrada, arrependo-me de todo o coração de Vos ter ofendido, e proponho firmemente, com o auxílio da Vossa graça, não mais pecar, e evitar as ocasiões próximas do pecado. Amém.</p>
+    </div>
+
+    <button class="ato-tab" onclick="toggleAto(this)">
+      Ato de Contrição — Forma Solene
+      <span class="chevron">▼</span>
+    </button>
+    <div class="ato-content">
+      <p>Senhor meu Jesus Cristo, Deus e homem verdadeiro, meu Criador, Pai e Redentor: pelo fato de serdes Vós quem sois, e por Vos amar sobre todas as coisas, pesa-me de todo coração ter-Vos ofendido.</p>
+      <p>Proponho firmemente nunca mais pecar, confessar-me e cumprir a penitência que me for imposta. Ofereço-Vos a minha vida em satisfação, e confio no Vosso infinito amor e misericórdia. Amém.</p>
+    </div>
+
+    <button class="ato-tab" onclick="toggleAto(this)">
+      Ato de Contrição — Forma Simples
+      <span class="chevron">▼</span>
+    </button>
+    <div class="ato-content">
+      <p>Senhor, tende piedade de mim, que sou pecador(a). Arrependo-me de ter pecado contra Vós. Prometeis a quem se arrepende o perdão e a paz. Confio na Vossa graça e misericórdia. Amém.</p>
+    </div>
+
+    <button class="ato-tab" onclick="toggleAto(this)">
+      Ato de Contrição — Com Propósito de Emenda
+      <span class="chevron">▼</span>
+    </button>
+    <div class="ato-content">
+      <p>Ó meu Deus! Estou verdadeiramente arrependido(a) por todos os meus pecados, porque ao pecar ofendi a Vós, que sois sumamente bom, e me tornei passível de Vossas justas penas.</p>
+      <p>Com a ajuda da Vossa graça, proponho firmemente fazer penitência, evitar as ocasiões próximas do pecado e emendar minha vida. Nosso Senhor Jesus Cristo, tende piedade de mim. Amém.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bottom action bar -->
+<div class="action-bar">
+  <div class="action-bar-inner">
+    <div class="counter-badge">Pecados marcados: <span id="count">0</span></div>
+    <button class="btn btn-gold" onclick="exportPDF()">⬇ Gerar PDF</button>
+    <button class="btn btn-outline" onclick="openReset()">↺ Novo Exame</button>
+    <button class="btn btn-outline" onclick="openHistory()" id="historyBtn" style="display:none;">📅 Histórico</button>
+  </div>
 </div>
 
 <!-- Reset Modal -->
 <div class="modal-overlay" id="resetModal">
   <div class="modal">
-    <h2>Novo Exame</h2>
-    <p>Isto limpará todas as marcações e quantidades atuais. Deseja continuar?</p>
+    <h2>✝ Novo Exame</h2>
+    <p id="resetModalText">A data da confissão atual será salva no histórico antes de limpar. Deseja continuar?</p>
     <div class="modal-btns">
-      <button class="btn btn-red" onclick="doReset()">Sim, limpar tudo</button>
+      <button class="btn btn-red" onclick="doReset()">Sim, salvar e limpar</button>
       <button class="btn btn-outline" onclick="closeReset()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- History Modal -->
+<div class="modal-overlay" id="historyModal">
+  <div class="modal modal-wide">
+    <h2>📅 Histórico de Confissões</h2>
+    <div id="historyList" class="history-list"></div>
+    <div class="modal-btns" style="margin-top:18px;">
+      <button class="btn btn-outline" onclick="closeHistory()">Fechar</button>
+      <button class="btn btn-red" onclick="clearHistory()" style="font-size:0.75rem;padding:8px 14px;">Apagar tudo</button>
     </div>
   </div>
 </div>
@@ -461,7 +675,7 @@ const DATA = [
       "Acreditei em horóscopos ou os usei?",
       "Coloquei riqueza, prazer, poder ou fama acima de Deus?",
       "Acreditei na reencarnação?",
-      "Abandonei minha fé católica ou frequentei cultos de outras igrejas pondo em risco minha fé?"
+      "Abandonei minha fé católica ou frequentei cultos de outras igrejas, pondo em risco minha fé?"
     ]
   },
   {
@@ -562,7 +776,7 @@ const DATA = [
       "Orgulho/Soberba: Sou orgulhoso, soberbo ou autossuficiente? Vaidoso? Busco chamar atenção sobre mim? Julgo-me indispensável?",
       "Avareza: Como me comporto com os que têm salários insuficientes, fome, falta de moradia, desemprego, doença? Gasto inutilmente ao invés de empregar em causas boas?",
       "Inveja: Sou invejoso, ciumento ou ressentido?",
-      "Avareza/Apego: Como uso o dinheiro? Vivo só na busca do prazer? Sou apegado às coisas?",
+      "Apego aos bens: Como uso o dinheiro? Vivo só na busca do prazer? Sou apegado às coisas?",
       "Ira: Sou impaciente, raivoso ou vingativo? Tenho ódio?",
       "Gula: Sou guloso? Vivo somente a nível de prazer (comida, bebida, tóxicos, TV, cigarro etc.)?",
       "Preguiça: Sou preguiçoso? Omito meus deveres religiosos, sociais, familiares ou de trabalho? Meu lazer é honesto?",
@@ -571,11 +785,8 @@ const DATA = [
   }
 ];
 
-// ── Build DOM ──
-const main = document.getElementById('main-content');
-// clear after intro card
-while(main.children.length > 1) main.removeChild(main.lastChild);
-
+// Build DOM
+const mainEl = document.getElementById('main-content');
 DATA.forEach((sec, si) => {
   const div = document.createElement('div');
   div.className = 'section';
@@ -619,13 +830,10 @@ DATA.forEach((sec, si) => {
     num.id = `c_${id}`;
     num.value = '1';
     num.disabled = true;
-    num.addEventListener('change', () => {
-      if(num.value < 1) num.value = 1;
-    });
+    num.addEventListener('change', () => { if (num.value < 1) num.value = 1; });
 
     wrap.appendChild(countLbl);
     wrap.appendChild(num);
-
     item.appendChild(cb);
     item.appendChild(lbl);
     item.appendChild(wrap);
@@ -633,13 +841,26 @@ DATA.forEach((sec, si) => {
   });
 
   div.appendChild(body);
-  main.appendChild(div);
+  mainEl.appendChild(div);
 });
 
+// Accordion
+function toggleAto(btn) {
+  const content = btn.nextElementSibling;
+  const isOpen = content.classList.contains('open');
+  document.querySelectorAll('.ato-content').forEach(c => c.classList.remove('open'));
+  document.querySelectorAll('.ato-tab').forEach(b => b.classList.remove('open'));
+  if (!isOpen) {
+    content.classList.add('open');
+    btn.classList.add('open');
+  }
+}
+
+// Checkbox logic
 function onCheck(cb, id) {
   const item = document.getElementById(`item_${id}`);
   const num = document.getElementById(`c_${id}`);
-  if(cb.checked) {
+  if (cb.checked) {
     item.classList.add('marked');
     num.disabled = false;
     num.focus();
@@ -656,25 +877,155 @@ function updateCount() {
   document.getElementById('count').textContent = n;
 }
 
-// ── Reset ──
-function openReset() { document.getElementById('resetModal').classList.add('open'); }
+// ── History (localStorage) ──
+const HISTORY_KEY = 'confession_dates';
+
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveHistory(list) {
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
+}
+
+function addDateToHistory(dateVal) {
+  if (!dateVal) return;
+  const list = loadHistory();
+  if (!list.includes(dateVal)) {
+    list.push(dateVal);
+    list.sort((a, b) => b.localeCompare(a)); // most recent first
+    saveHistory(list);
+  }
+  updateHistoryBtn();
+}
+
+function updateHistoryBtn() {
+  const list = loadHistory();
+  const btn = document.getElementById('historyBtn');
+  btn.style.display = list.length > 0 ? 'inline-block' : 'none';
+  updateLastConfInfo();
+}
+
+function updateLastConfInfo() {
+  const list = loadHistory(); // already sorted most recent first
+  const info = document.getElementById('lastConfInfo');
+  if (list.length === 0) { info.style.display = 'none'; return; }
+
+  const dateStr = list[0];
+  const [yyyy, mm, dd] = dateStr.split('-');
+  const dateObj = new Date(parseInt(yyyy), parseInt(mm) - 1, parseInt(dd));
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diffDays = Math.round((today - dateObj) / (1000 * 60 * 60 * 24));
+
+  let diffText;
+  if (diffDays === 0) diffText = 'hoje';
+  else if (diffDays === 1) diffText = 'há 1 dia';
+  else if (diffDays < 7) diffText = `há ${diffDays} dias`;
+  else if (diffDays < 14) diffText = 'há 1 semana';
+  else if (diffDays < 30) diffText = `há ${Math.floor(diffDays/7)} semanas`;
+  else if (diffDays < 60) diffText = 'há 1 mês';
+  else if (diffDays < 365) diffText = `há ${Math.floor(diffDays/30)} meses`;
+  else if (diffDays < 730) diffText = 'há 1 ano';
+  else diffText = `há ${Math.floor(diffDays/365)} anos`;
+
+  document.getElementById('lastConfDate').textContent = `${dd}/${mm}/${yyyy}`;
+  document.getElementById('lastConfDays').textContent = diffText;
+  info.style.display = 'flex';
+  info.style.alignItems = 'center';
+  info.style.gap = '6px';
+}
+
+function openHistory() {
+  renderHistory();
+  document.getElementById('historyModal').classList.add('open');
+}
+
+function closeHistory() {
+  document.getElementById('historyModal').classList.remove('open');
+}
+
+function renderHistory() {
+  const list = loadHistory();
+  const container = document.getElementById('historyList');
+  container.innerHTML = '';
+
+  if (list.length === 0) {
+    container.innerHTML = '<div class="history-empty">Nenhuma confissão registrada ainda.</div>';
+    return;
+  }
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  list.forEach((dateStr, idx) => {
+    const [yyyy, mm, dd] = dateStr.split('-');
+    const dateObj = new Date(parseInt(yyyy), parseInt(mm) - 1, parseInt(dd));
+    const diffDays = Math.round((today - dateObj) / (1000 * 60 * 60 * 24));
+    const diffText = diffDays === 0 ? 'hoje' : diffDays === 1 ? 'ontem' : `há ${diffDays} dias`;
+
+    const row = document.createElement('div');
+    row.className = 'history-item';
+    row.innerHTML = `
+      <span class="history-num">${list.length - idx}.</span>
+      <span class="history-cross">✝</span>
+      <span class="history-date">${dd}/${mm}/${yyyy}</span>
+      <span class="history-days">${diffText}</span>
+      <button class="history-del" title="Remover" onclick="removeDate('${dateStr}')">✕</button>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function removeDate(dateStr) {
+  let list = loadHistory();
+  list = list.filter(d => d !== dateStr);
+  saveHistory(list);
+  renderHistory();
+  updateHistoryBtn();
+}
+
+function clearHistory() {
+  if (!confirm('Apagar todo o histórico de confissões?')) return;
+  saveHistory([]);
+  renderHistory();
+  updateHistoryBtn();
+  showToast('Histórico apagado');
+}
+
+// Reset
+function openReset() {
+  const dateVal = document.getElementById('confDate').value;
+  const txt = document.getElementById('resetModalText');
+  if (dateVal) {
+    const [yyyy, mm, dd] = dateVal.split('-');
+    txt.textContent = `A data ${dd}/${mm}/${yyyy} será salva no histórico antes de limpar. Deseja continuar?`;
+  } else {
+    txt.textContent = 'Isto limpará todas as marcações e quantidades atuais. Deseja continuar?';
+  }
+  document.getElementById('resetModal').classList.add('open');
+}
+
 function closeReset() { document.getElementById('resetModal').classList.remove('open'); }
+
 function doReset() {
+  const dateVal = document.getElementById('confDate').value;
+  addDateToHistory(dateVal);
+
   document.querySelectorAll('.sin-checkbox').forEach(cb => {
     cb.checked = false;
-    const id = cb.id;
-    document.getElementById(`item_${id}`).classList.remove('marked');
-    const num = document.getElementById(`c_${id}`);
+    document.getElementById(`item_${cb.id}`).classList.remove('marked');
+    const num = document.getElementById(`c_${cb.id}`);
     num.disabled = true;
     num.value = 1;
   });
-  document.getElementById('confDate').value = '';
+  document.getElementById('confDate').value = new Date().toISOString().split('T')[0];
   updateCount();
   closeReset();
-  showToast('Exame reiniciado');
+  showToast(dateVal ? 'Data salva e exame reiniciado' : 'Exame reiniciado');
 }
 
-// ── Toast ──
+// Toast
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -682,118 +1033,93 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// ── PDF ──
+// PDF
 function exportPDF() {
   const checked = document.querySelectorAll('.sin-checkbox:checked');
-  if(checked.length === 0) {
-    showToast('Nenhum pecado marcado');
-    return;
-  }
+  if (checked.length === 0) { showToast('Nenhum pecado marcado'); return; }
 
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
 
-  const margin = 20;
-  const pageW = 210;
-  const pageH = 297;
+  const margin = 20, pageW = 210, pageH = 297;
   const contentW = pageW - margin * 2;
   let y = margin;
 
-  // Colors
-  const darkBrown = [42, 26, 14];
-  const gold = [184, 150, 46];
-  const red = [139, 26, 26];
-  const cream = [250, 246, 238];
-  const parchment = [242, 232, 213];
+  const darkBrown = [42, 26, 14], gold = [184, 150, 46], red = [139, 26, 26];
+  const cream = [250, 246, 238], parchment = [242, 232, 213];
 
-  function addPageIfNeeded(h) {
-    if(y + h > pageH - margin) {
-      doc.addPage();
-      y = margin;
-    }
+  function newPageCheck(h) {
+    if (y + h > pageH - margin - 14) { doc.addPage(); y = margin; }
   }
 
-  // Background
+  // Page background
   doc.setFillColor(...cream);
   doc.rect(0, 0, pageW, pageH, 'F');
 
-  // Header box
+  // Header
   doc.setFillColor(...darkBrown);
   doc.rect(0, 0, pageW, 40, 'F');
-
   doc.setTextColor(...gold);
   doc.setFont('times', 'bold');
   doc.setFontSize(18);
   doc.text('EXAME DE CONSCIÊNCIA', pageW / 2, 16, { align: 'center' });
-
   doc.setFont('times', 'italic');
   doc.setFontSize(10);
   doc.setTextColor(196, 169, 122);
   doc.text('Para a Santa Confissão', pageW / 2, 23, { align: 'center' });
-
-  // Gold line
   doc.setDrawColor(...gold);
   doc.setLineWidth(0.5);
   doc.line(margin, 35, pageW - margin, 35);
 
   y = 46;
 
-  // Date
   const dateVal = document.getElementById('confDate').value;
-  if(dateVal) {
+  if (dateVal) {
     const [yyyy, mm, dd] = dateVal.split('-');
-    const dateStr = `${dd}/${mm}/${yyyy}`;
     doc.setFont('times', 'bold');
     doc.setFontSize(10);
     doc.setTextColor(...darkBrown);
     doc.text('Data da Confissão:', margin, y);
     doc.setFont('times', 'normal');
-    doc.text(dateStr, margin + 38, y);
+    doc.text(`${dd}/${mm}/${yyyy}`, margin + 38, y);
     y += 8;
   }
 
-  // Count
   doc.setFont('times', 'italic');
   doc.setFontSize(9);
   doc.setTextColor(100, 80, 60);
   doc.text(`Total de pecados marcados: ${checked.length}`, margin, y);
   y += 10;
-
   doc.setDrawColor(...gold);
   doc.setLineWidth(0.3);
   doc.line(margin, y, pageW - margin, y);
   y += 8;
 
-  // Group sins by section
+  // Group sins
   const groups = {};
   checked.forEach(cb => {
-    const parts = cb.id.split('_'); // s_si_i
-    const si = parseInt(parts[1]);
-    const i = parseInt(parts[2]);
-    const num = parseInt(document.getElementById(`c_${cb.id}`).value) || 1;
-    if(!groups[si]) groups[si] = { title: DATA[si].title, items: [] };
-    groups[si].items.push({ text: DATA[si].sins[i], qty: num });
+    const parts = cb.id.split('_');
+    const si = parseInt(parts[1]), i = parseInt(parts[2]);
+    const qty = parseInt(document.getElementById(`c_${cb.id}`).value) || 1;
+    if (!groups[si]) groups[si] = { title: DATA[si].title, items: [] };
+    groups[si].items.push({ text: DATA[si].sins[i], qty });
   });
 
   Object.values(groups).forEach(group => {
-    addPageIfNeeded(16);
-
-    // Section header
+    newPageCheck(16);
     doc.setFillColor(...darkBrown);
     doc.rect(margin, y - 4, contentW, 8, 'F');
     doc.setFont('times', 'bold');
     doc.setFontSize(9);
     doc.setTextColor(...gold);
-    const titleLines = doc.splitTextToSize(group.title, contentW - 4);
-    doc.text(titleLines[0], margin + 3, y + 0.5);
+    doc.text(doc.splitTextToSize(group.title, contentW - 4)[0], margin + 3, y + 0.5);
     y += 10;
 
     group.items.forEach(item => {
       const lines = doc.splitTextToSize(item.text, contentW - 22);
       const blockH = lines.length * 5 + 5;
-      addPageIfNeeded(blockH);
+      newPageCheck(blockH);
 
-      // Red cross bullet
       doc.setTextColor(...red);
       doc.setFontSize(11);
       doc.text('†', margin + 1, y + 0.5);
@@ -801,11 +1127,8 @@ function exportPDF() {
       doc.setFont('times', 'normal');
       doc.setFontSize(9.5);
       doc.setTextColor(...darkBrown);
-      lines.forEach((line, li) => {
-        doc.text(line, margin + 7, y + li * 5);
-      });
+      lines.forEach((line, li) => doc.text(line, margin + 7, y + li * 5));
 
-      // Qty badge
       doc.setFillColor(...parchment);
       doc.setDrawColor(160, 120, 60);
       doc.setLineWidth(0.3);
@@ -816,20 +1139,35 @@ function exportPDF() {
       doc.text(`${item.qty}×`, pageW - margin - 8, y + 0.5, { align: 'center' });
 
       y += blockH - 2;
-
-      // Separator
       doc.setDrawColor(210, 190, 160);
       doc.setLineWidth(0.15);
       doc.line(margin + 7, y, pageW - margin - 20, y);
       y += 3;
     });
-
     y += 4;
   });
 
-  // Footer on each page
+  // Ato de Contrição at end
+  newPageCheck(46);
+  y += 4;
+  doc.setFillColor(...red);
+  doc.rect(margin, y - 4, contentW, 8, 'F');
+  doc.setFont('times', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(245, 218, 218);
+  doc.text('ATO DE CONTRIÇÃO', margin + 3, y + 0.5);
+  y += 12;
+
+  const atoText = 'Meu Jesus Crucificado por minha culpa, estou muito arrependido(a) de ter feito pecado, pois ofendi a Vós que sois tão bom e mereci ser castigado(a) neste mundo e no outro. Mas perdoai-me, Senhor, não quero mais pecar. Amém.';
+  const atoLines = doc.splitTextToSize(atoText, contentW);
+  doc.setFont('times', 'italic');
+  doc.setFontSize(10);
+  doc.setTextColor(...darkBrown);
+  atoLines.forEach(line => { doc.text(line, margin, y); y += 6; });
+
+  // Footers
   const totalPages = doc.getNumberOfPages();
-  for(let p = 1; p <= totalPages; p++) {
+  for (let p = 1; p <= totalPages; p++) {
     doc.setPage(p);
     doc.setFillColor(...darkBrown);
     doc.rect(0, pageH - 14, pageW, 14, 'F');
@@ -846,9 +1184,9 @@ function exportPDF() {
   showToast('PDF gerado com sucesso!');
 }
 
-// Set today as default date
-const today = new Date().toISOString().split('T')[0];
-document.getElementById('confDate').value = today;
+// Default date
+document.getElementById('confDate').value = new Date().toISOString().split('T')[0];
+updateHistoryBtn();
 </script>
 </body>
 </html>
