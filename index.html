@@ -72,6 +72,49 @@
       opacity: 0.85;
     }
 
+    /* Exam tabs */
+    .exam-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .exam-tab {
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid var(--gold-dim);
+      color: #c4a97a;
+      padding: 6px 16px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .exam-tab small {
+      font-size: 0.65rem;
+      opacity: 0.8;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .exam-tab:hover {
+      border-color: var(--gold-light);
+      color: var(--gold-light);
+      background: rgba(184,150,46,0.08);
+    }
+
+    .exam-tab.active {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--brown-dark);
+    }
+
     /* Date bar */
     .date-bar {
       background: var(--parchment);
@@ -515,6 +558,32 @@
 
     .history-del:hover { background: #f8e8e8; color: var(--red-church); }
 
+    /* Reset quote */
+    blockquote {
+      background: linear-gradient(135deg, #1a0f07 0%, #2a1a0e 100%);
+      border-left: 4px solid var(--gold);
+      border-radius: 4px;
+      padding: 18px 22px;
+      margin: 0;
+    }
+
+    blockquote p {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: var(--gold-light);
+      margin-bottom: 8px;
+    }
+
+    blockquote cite {
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      color: #c4a97a;
+      letter-spacing: 0.05em;
+      font-style: normal;
+    }
+
     /* Toast */
     #toast {
       position: fixed;
@@ -553,6 +622,11 @@
   <span class="cross-icon">✝</span>
   <h1>Exame de Consciência</h1>
   <p class="subtitle">Para uma boa confissão sacramental</p>
+  <div class="exam-tabs">
+    <button class="exam-tab active" onclick="switchExam('tradicional', this)">Tradicional</button>
+    <button class="exam-tab" onclick="switchExam('adultos', this)">Adultos <small>(Opus Dei)</small></button>
+    <button class="exam-tab" onclick="switchExam('jovens', this)">Jovens <small>(Opus Dei)</small></button>
+  </div>
 </header>
 
 <div class="date-bar">
@@ -634,12 +708,32 @@
 <!-- Reset Modal -->
 <div class="modal-overlay" id="resetModal">
   <div class="modal">
-    <h2>✝ Novo Exame</h2>
-    <p id="resetModalText">A data da confissão atual será salva no histórico antes de limpar. Deseja continuar?</p>
-    <div class="modal-btns">
-      <button class="btn btn-red" onclick="doReset()">Sim, salvar e limpar</button>
-      <button class="btn btn-outline" onclick="closeReset()">Cancelar</button>
+
+    <!-- Step 1: Confessei? -->
+    <div id="resetStep1">
+      <h2>✝ Novo Exame</h2>
+      <p style="margin-bottom:20px;">Você já se confessou?</p>
+      <div class="modal-btns">
+        <button class="btn btn-gold" onclick="resetAnswerYes()">Sim</button>
+        <button class="btn btn-outline" onclick="resetAnswerNo()">Ainda não</button>
+        <button class="btn btn-outline" onclick="closeReset()">Cancelar</button>
+      </div>
     </div>
+
+    <!-- Step 2: Quote (shown when Yes) -->
+    <div id="resetStep2" style="display:none;">
+      <p style="font-size:1.5rem; text-align:center; color:var(--gold); margin-bottom:10px;">✝</p>
+      <blockquote id="resetQuote">
+        <p>«Enterra com a penitência… as tuas negligências, ofensas e pecados.»</p>
+        <cite>— São Josemaria Escrivá, <em>Caminho</em>, 211</cite>
+      </blockquote>
+      <p id="resetModalText" style="margin-top:16px; font-size:0.9rem; color:var(--brown-light); text-align:center;"></p>
+      <div class="modal-btns" style="margin-top:18px;">
+        <button class="btn btn-red" onclick="doReset()">Iniciar novo exame</button>
+        <button class="btn btn-outline" onclick="closeReset()">Cancelar</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -658,7 +752,8 @@
 <div id="toast"></div>
 
 <script>
-const DATA = [
+const ALL_DATA = {
+  tradicional: [
   {
     title: "1º Mandamento — Amarás ao Senhor teu Deus",
     ref: "Lc 10,27",
@@ -783,9 +878,224 @@ const DATA = [
       "Luxúria: Como está minha sexualidade? Meus pensamentos? Tenho relacionamento errado? Sou permissivo?"
     ]
   }
-];
+  ],
+
+  adultos: [
+  {
+    title: "Fé e relação com Deus",
+    sins: [
+      "Neguei ou abandonei a minha fé? Tenho a preocupação de conhecê-la melhor?",
+      "Recusei-me a defender a minha fé ou fiquei envergonhado dela?",
+      "Existe algum aspecto da minha fé que eu ainda não aceito?",
+      "Disse o nome de Deus em vão?",
+      "Pratiquei o espiritismo ou coloquei a minha confiança em adivinhos ou horóscopos?",
+      "Manifestei falta de respeito pelas pessoas, lugares ou coisas santas?"
+    ]
+  },
+  {
+    title: "Sacramentos e vida litúrgica",
+    sins: [
+      "Faltei voluntariamente à Missa nos domingos ou dias de preceito?",
+      "Recebi a Sagrada Comunhão tendo algum pecado grave não confessado?",
+      "Recebi a Comunhão sem agradecimento ou sem a devida reverência?"
+    ]
+  },
+  {
+    title: "Caridade e relações com o próximo",
+    sins: [
+      "Fui impaciente, fiquei irritado ou fui invejoso?",
+      "Guardei ressentimentos ou relutei em perdoar?",
+      "Fui violento nas palavras ou ações com outros?",
+      "Colaborei ou encorajei alguém a fazer um aborto, a destruir embriões humanos, a praticar a eutanásia ou qualquer outro meio de acabar com a vida?",
+      "Tive ódio ou juízos críticos em pensamentos ou ações? Olhei os outros com desprezo?",
+      "Falei mal dos outros, transformando o assunto em fofoca?"
+    ]
+  },
+  {
+    title: "Temperança e castidade",
+    sins: [
+      "Abusei de bebidas alcoólicas? Usei drogas?",
+      "Fiquei vendo vídeos ou sites pornográficos? Cometi atos impuros, sozinho ou com outras pessoas?",
+      "Estou morando com alguém como se fosse casado, sem que o seja?"
+    ]
+  },
+  {
+    title: "Família e deveres de estado",
+    sins: [
+      "Se sou casado, procuro amar o meu cônjuge mais do que a qualquer outra pessoa? Coloco meu casamento em primeiro lugar?",
+      "E os meus filhos? Tenho uma atitude aberta para novos filhos?",
+      "Trabalho de modo desordenado, ocupando tempo e energias que deveria dedicar à minha família e aos amigos?"
+    ]
+  },
+  {
+    title: "Humildade, pobreza e honestidade",
+    sins: [
+      "Fui orgulhoso ou egoísta em meus pensamentos e ações?",
+      "Deixei de ajudar os pobres e os necessitados? Gastei dinheiro com o meu conforto e luxo pessoal, esquecendo as minhas responsabilidades para com os outros e para com a Igreja?",
+      "Disse mentiras? Fui honesto e diligente no meu trabalho?",
+      "Roubei ou enganei alguém no trabalho?",
+      "Cedi à preguiça? Preferi a comodidade ao invés do serviço aos demais?"
+    ]
+  },
+  {
+    title: "Apostolado",
+    sins: [
+      "Descuidei a minha responsabilidade de aproximar de Deus os outros, com o meu exemplo e a minha palavra?"
+    ]
+  }
+  ],
+
+  jovens: [
+  {
+    title: "Fé e relação com Deus",
+    sins: [
+      "Neguei ou abandonei a minha fé? Tenho a preocupação de conhecê-la melhor?",
+      "Recusei-me a defender a minha fé ou fiquei envergonhado dela?",
+      "Disse o nome de Deus em vão?",
+      "Pratiquei o espiritismo ou coloquei a minha confiança em adivinhos ou horóscopos?",
+      "Manifestei falta de respeito pelas pessoas, lugares ou coisas santas?"
+    ]
+  },
+  {
+    title: "Sacramentos e oração",
+    sins: [
+      "Faltei voluntariamente à Missa nos domingos ou dias de preceito? Esqueci-me de Deus, descuidando as minhas orações?",
+      "Recebi a Sagrada Comunhão tendo algum pecado grave não confessado? Comunguei sem a devida reverência e sem o devido agradecimento?"
+    ]
+  },
+  {
+    title: "Família e respeito",
+    sins: [
+      "Fui prestativo em casa? Deixei de dar carinho aos meus pais e irmãos?",
+      "Tratei os professores ou os adultos com desrespeito?"
+    ]
+  },
+  {
+    title: "Caridade e relações com o próximo",
+    sins: [
+      "Fui impaciente, fiquei irritado ou fui invejoso? Guardei ressentimentos ou fiquei relutante em perdoar?",
+      "Estive de mau humor ou cedi à ironia? Julguei mal ou senti ódio por alguém?",
+      "Fui violento ou participei de brigas? Fiz mal a alguma pessoa insultando-a ou falando mal dela?",
+      "Revelei algum segredo ou disse coisas somente para fazer mal a outros?",
+      "Encorajei outros a se comportarem mal?"
+    ]
+  },
+  {
+    title: "Estudo e trabalho",
+    sins: [
+      "Deixei de estudar com empenho na escola? Cedi à preguiça?"
+    ]
+  },
+  {
+    title: "Pureza e castidade",
+    sins: [
+      "Tive pensamentos impuros? Falei de maneira obscena?",
+      "Cometi atos impuros sozinho ou com outras pessoas? Vi imagens, sites ou vídeos pornográficos?"
+    ]
+  },
+  {
+    title: "Honestidade",
+    sins: [
+      "Contei mentiras para me desculpar, para magoar os outros ou para enaltecer a minha imagem?",
+      "Roubei alguma coisa? Estraguei de propósito o que era dos outros? Fiz algum ato de vandalismo?"
+    ]
+  },
+  {
+    title: "Humildade e sobriedade",
+    sins: [
+      "Tenho inveja dos outros, da sua aparência, da sua popularidade, do seu trabalho, do seu dinheiro? Deixo que o coração fique preso ao desejo de possuir?",
+      "Consumi álcool em excesso? Usei drogas?",
+      "Fui vaidoso ou egoísta em meus pensamentos ou ações?"
+    ]
+  },
+  {
+    title: "Apostolado",
+    sins: [
+      "Preferi a minha comodidade, fugindo do serviço aos demais?",
+      "Tive a preocupação de aproximar os outros de Deus, com o meu exemplo e a minha palavra?"
+    ]
+  }
+  ]
+};
+
+let currentExam = 'tradicional';
+let DATA = ALL_DATA[currentExam];
+
+function switchExam(key, btn) {
+  if (key === currentExam) return;
+  currentExam = key;
+  DATA = ALL_DATA[key];
+  document.querySelectorAll('.exam-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  buildDOM();
+  updateCount();
+}
 
 // Build DOM
+function buildDOM() {
+  const mainEl = document.getElementById('main-content');
+  // Remove all sections, keep intro card
+  Array.from(mainEl.children).forEach(c => { if (!c.classList.contains('intro-card')) c.remove(); });
+
+  DATA.forEach((sec, si) => {
+    const div = document.createElement('div');
+    div.className = 'section';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'section-header';
+    hdr.textContent = sec.title + (sec.ref ? ` (${sec.ref})` : '');
+    div.appendChild(hdr);
+
+    const body = document.createElement('div');
+    body.className = 'section-body';
+
+    sec.sins.forEach((sin, i) => {
+      const id = `s_${si}_${i}`;
+      const item = document.createElement('div');
+      item.className = 'sin-item';
+      item.id = `item_${id}`;
+
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.className = 'sin-checkbox';
+      cb.id = id;
+      cb.addEventListener('change', () => onCheck(cb, id));
+
+      const lbl = document.createElement('label');
+      lbl.className = 'sin-text';
+      lbl.htmlFor = id;
+      lbl.textContent = sin;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'sin-count-wrap';
+
+      const countLbl = document.createElement('label');
+      countLbl.textContent = 'Vezes:';
+      countLbl.htmlFor = `c_${id}`;
+
+      const num = document.createElement('input');
+      num.type = 'number';
+      num.min = '1';
+      num.className = 'sin-count';
+      num.id = `c_${id}`;
+      num.value = '1';
+      num.disabled = true;
+      num.addEventListener('change', () => { if (num.value < 1) num.value = 1; });
+
+      wrap.appendChild(countLbl);
+      wrap.appendChild(num);
+      item.appendChild(cb);
+      item.appendChild(lbl);
+      item.appendChild(wrap);
+      body.appendChild(item);
+    });
+
+    div.appendChild(body);
+    mainEl.appendChild(div);
+  });
+}
+
+buildDOM();
 const mainEl = document.getElementById('main-content');
 DATA.forEach((sec, si) => {
   const div = document.createElement('div');
@@ -995,30 +1305,38 @@ function clearHistory() {
 
 // Reset
 function openReset() {
+  document.getElementById('resetStep1').style.display = 'block';
+  document.getElementById('resetStep2').style.display = 'none';
+  document.getElementById('resetModal').classList.add('open');
+}
+
+function closeReset() {
+  document.getElementById('resetModal').classList.remove('open');
+}
+
+function resetAnswerYes() {
   const dateVal = document.getElementById('confDate').value;
   const txt = document.getElementById('resetModalText');
   if (dateVal) {
     const [yyyy, mm, dd] = dateVal.split('-');
-    txt.textContent = `A data ${dd}/${mm}/${yyyy} será salva no histórico antes de limpar. Deseja continuar?`;
+    txt.textContent = `A data ${dd}/${mm}/${yyyy} será salva no histórico.`;
   } else {
-    txt.textContent = 'Isto limpará todas as marcações e quantidades atuais. Deseja continuar?';
+    txt.textContent = '';
   }
-  document.getElementById('resetModal').classList.add('open');
+  document.getElementById('resetStep1').style.display = 'none';
+  document.getElementById('resetStep2').style.display = 'block';
 }
 
-function closeReset() { document.getElementById('resetModal').classList.remove('open'); }
+function resetAnswerNo() {
+  // Just close — they haven't confessed yet
+  closeReset();
+}
 
 function doReset() {
   const dateVal = document.getElementById('confDate').value;
   addDateToHistory(dateVal);
 
-  document.querySelectorAll('.sin-checkbox').forEach(cb => {
-    cb.checked = false;
-    document.getElementById(`item_${cb.id}`).classList.remove('marked');
-    const num = document.getElementById(`c_${cb.id}`);
-    num.disabled = true;
-    num.value = 1;
-  });
+  buildDOM();
   document.getElementById('confDate').value = new Date().toISOString().split('T')[0];
   updateCount();
   closeReset();
