@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exame de Consciência</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --gold: #b8962e;
+      --gold-light: #d4af5a;
+      --gold-dim: #8a6e22;
+      --cream: #faf6ee;
+      --parchment: #f2e8d5;
+      --brown-dark: #2a1a0e;
+      --brown-mid: #4a3020;
+      --brown-light: #7a5a3a;
+      --red-church: #8b1a1a;
+      --shadow: rgba(42,26,14,0.18);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'EB Garamond', Georgia, serif;
+      background: var(--brown-dark);
+      color: var(--brown-dark);
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse at 50% 0%, #3d2210 0%, var(--brown-dark) 60%);
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(180deg, #1a0f07 0%, #2a1a0e 100%);
+      border-bottom: 2px solid var(--gold-dim);
+      padding: 28px 20px 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    }
+
+    .cross-icon {
+      font-size: 1.6rem;
+      color: var(--gold);
+      letter-spacing: 6px;
+      display: block;
+      margin-bottom: 6px;
+      opacity: 0.85;
+    }
+
+    header h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.2rem, 4vw, 1.9rem);
+      font-weight: 700;
+      color: var(--gold-light);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    header p.subtitle {
+      font-style: italic;
+      color: #c4a97a;
+      font-size: 0.93rem;
+      margin-top: 4px;
+      opacity: 0.85;
+    }
+
+    /* ── Date bar ── */
+    .date-bar {
+      background: var(--parchment);
+      border-bottom: 1px solid #d4b87a;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .date-bar label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.82rem;
+      color: var(--brown-mid);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .date-bar input[type="date"] {
+      font-family: 'EB Garamond', serif;
+      font-size: 1rem;
+      border: 1px solid var(--brown-light);
+      background: var(--cream);
+      color: var(--brown-dark);
+      padding: 5px 10px;
+      border-radius: 3px;
+      outline: none;
+    }
+
+    .date-bar input[type="date"]:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(184,150,46,0.2);
+    }
+
+    /* ── Main ── */
+    main {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 28px 16px 100px;
+    }
+
+    /* ── Intro card ── */
+    .intro-card {
+      background: var(--cream);
+      border: 1px solid #d0b882;
+      border-left: 4px solid var(--gold);
+      border-radius: 4px;
+      padding: 18px 22px;
+      margin-bottom: 28px;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--brown-mid);
+    }
+
+    .intro-card strong { color: var(--brown-dark); }
+
+    /* ── Section ── */
+    .section {
+      margin-bottom: 22px;
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px var(--shadow);
+    }
+
+    .section-header {
+      background: linear-gradient(90deg, var(--brown-dark) 0%, var(--brown-mid) 100%);
+      color: var(--gold-light);
+      font-family: 'Cinzel', serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 11px 18px;
+      border-left: 4px solid var(--gold);
+    }
+
+    .section-body { background: var(--cream); }
+
+    /* ── Sin item ── */
+    .sin-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 11px 18px;
+      border-bottom: 1px solid #e8dfc8;
+      transition: background 0.15s;
+    }
+
+    .sin-item:last-child { border-bottom: none; }
+
+    .sin-item:hover { background: #f5edd8; }
+
+    .sin-item.marked {
+      background: #fff5e6;
+      border-left: 3px solid var(--red-church);
+    }
+
+    .sin-checkbox {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      border: 2px solid #b09060;
+      border-radius: 3px;
+      background: white;
+      cursor: pointer;
+      margin-top: 2px;
+      position: relative;
+      transition: all 0.15s;
+    }
+
+    .sin-checkbox:checked {
+      background: var(--red-church);
+      border-color: var(--red-church);
+    }
+
+    .sin-checkbox:checked::after {
+      content: '✓';
+      position: absolute;
+      top: -1px;
+      left: 2px;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .sin-text {
+      flex: 1;
+      font-size: 0.97rem;
+      line-height: 1.55;
+      color: var(--brown-dark);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .sin-count-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 90px;
+    }
+
+    .sin-count-wrap label {
+      font-size: 0.78rem;
+      color: var(--brown-light);
+      font-family: 'Cinzel', serif;
+      white-space: nowrap;
+    }
+
+    .sin-count {
+      width: 52px;
+      border: 1px solid #c0a070;
+      border-radius: 3px;
+      padding: 3px 6px;
+      text-align: center;
+      font-family: 'EB Garamond', serif;
+      font-size: 1rem;
+      color: var(--brown-dark);
+      background: white;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .sin-count:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(184,150,46,0.15);
+    }
+
+    .sin-count:disabled {
+      background: #f0ebe0;
+      color: #bbb;
+    }
+
+    /* ── Sticky bottom bar ── */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(0deg, #1a0f07 0%, #2a1a0e 100%);
+      border-top: 2px solid var(--gold-dim);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      z-index: 200;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.5);
+    }
+
+    .counter-badge {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      color: #c4a97a;
+      letter-spacing: 0.05em;
+    }
+
+    .counter-badge span {
+      color: var(--gold-light);
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .btn {
+      font-family: 'Cinzel', serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 3px;
+      padding: 9px 20px;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+      color: var(--brown-dark);
+      box-shadow: 0 2px 8px rgba(184,150,46,0.35);
+    }
+
+    .btn-gold:hover {
+      background: linear-gradient(135deg, var(--gold-light) 0%, #e0c070 100%);
+      box-shadow: 0 4px 14px rgba(184,150,46,0.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-red {
+      background: linear-gradient(135deg, var(--red-church) 0%, #a02020 100%);
+      color: #f5edd8;
+      box-shadow: 0 2px 8px rgba(139,26,26,0.35);
+    }
+
+    .btn-red:hover {
+      background: linear-gradient(135deg, #a02020 0%, #c03030 100%);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--gold-dim);
+      color: #c4a97a;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--gold-light);
+      color: var(--gold-light);
+      background: rgba(184,150,46,0.08);
+    }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10,5,2,0.75);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--cream);
+      border: 1px solid var(--gold);
+      border-radius: 6px;
+      max-width: 460px;
+      width: 100%;
+      padding: 30px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    }
+
+    .modal h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      color: var(--brown-dark);
+      margin-bottom: 12px;
+      text-align: center;
+      letter-spacing: 0.07em;
+    }
+
+    .modal p {
+      font-size: 0.96rem;
+      color: var(--brown-mid);
+      line-height: 1.6;
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .modal-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: var(--brown-dark);
+      color: var(--gold-light);
+      border: 1px solid var(--gold-dim);
+      font-family: 'Cinzel', serif;
+      font-size: 0.84rem;
+      letter-spacing: 0.06em;
+      padding: 10px 24px;
+      border-radius: 4px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s;
+      z-index: 999;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 500px) {
+      .sin-count-wrap { min-width: 70px; }
+      .sin-count { width: 44px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="cross-icon">✝</span>
+  <h1>Exame de Consciência</h1>
+  <p class="subtitle">Para uma boa confissão sacramental</p>
+</header>
+
+<div class="date-bar">
+  <label for="confDate">Data da Confissão:</label>
+  <input type="date" id="confDate" />
+</div>
+
+<main id="main-content">
+  <div class="intro-card">
+    <strong>Como usar:</strong> Marque cada pecado cometido desde sua última confissão e informe a quantidade de vezes. Ao final, gere o relatório em PDF para levar ao confessionário.
+  </div>
+  <!-- sections injected by JS -->
+</main>
+
+<div class="bottom-bar">
+  <div class="counter-badge">Marcados: <span id="count">0</span></div>
+  <button class="btn btn-gold" onclick="exportPDF()">⬇ Gerar PDF</button>
+  <button class="btn btn-outline" onclick="openReset()">↺ Novo Exame</button>
+</div>
+
+<!-- Reset Modal -->
+<div class="modal-overlay" id="resetModal">
+  <div class="modal">
+    <h2>Novo Exame</h2>
+    <p>Isto limpará todas as marcações e quantidades atuais. Deseja continuar?</p>
+    <div class="modal-btns">
+      <button class="btn btn-red" onclick="doReset()">Sim, limpar tudo</button>
+      <button class="btn btn-outline" onclick="closeReset()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const DATA = [
+  {
+    title: "1º Mandamento — Amarás ao Senhor teu Deus",
+    ref: "Lc 10,27",
+    sins: [
+      "Duvidei da existência de Deus?",
+      "Reneguei ou abandonei minha fé?",
+      "Deixei de rezar todos os dias?",
+      "Li revistas ou livros contrários à fé e aos bons costumes? Conservei ou emprestei este material?",
+      "Assisti a programas de TV ou cinema contrários à fé e aos bons costumes?",
+      "Queixei-me da Providência de Deus nas doenças, na pobreza e nos sofrimentos?",
+      "Zombei de coisas santas ou me revolte contra Deus?",
+      "Frequentei reuniões, cultos ou organizações contrárias à fé (espiritismo, umbanda, quimbanda, maçonaria, curandeirismo, cartomantes, magia, feiticeiros, benzedeiras, adivinhos)?",
+      "Trago comigo orações supersticiosas, amuletos ou figas? Lidei com despachos?",
+      "Acreditei em horóscopos ou os usei?",
+      "Coloquei riqueza, prazer, poder ou fama acima de Deus?",
+      "Acreditei na reencarnação?",
+      "Abandonei minha fé católica ou frequentei cultos de outras igrejas pondo em risco minha fé?"
+    ]
+  },
+  {
+    title: "2º Mandamento — Não pronunciarás o nome de Deus em vão",
+    sins: [
+      "Pronunciei o nome de Deus com irreverência ou palavras ofensivas?",
+      "Pronunciei o nome dos santos sem respeito?",
+      "Blasfemei contra Deus, Nossa Senhora, os Santos, a Igreja ou os Sacramentos?"
+    ]
+  },
+  {
+    title: "3º Mandamento — Guardarás o domingo e os dias santos",
+    sins: [
+      "Deixei de participar da Missa nos domingos e dias santos de preceito?",
+      "Cheguei atrasado à Missa?",
+      "Fui irreverente na Igreja (risos, conversas inúteis)?",
+      "Não procuro participar da Santa Missa com atenção, respeito e devoção?",
+      "Após a comunhão, não me entretive com Cristo eucarístico recebido, ficando a olhar os outros ou conversando?"
+    ]
+  },
+  {
+    title: "4º Mandamento — Honrarás pai e mãe",
+    sins: [
+      "Fui malcriado com meus pais ou superiores? Entristeci-os gravemente?",
+      "Desobedeci em coisas importantes? Bati ou ameacei meus pais?",
+      "Neguei minha ajuda ou assistência a pais idosos ou doentes?",
+      "Não perdoo as faltas dos meus pais? Não rezo por eles?",
+      "Zombei de pessoas idosas ou com deficiência?"
+    ]
+  },
+  {
+    title: "5º Mandamento — Não matarás",
+    sins: [
+      "Expus-me a perigo de vida sem necessidade?",
+      "Fui imoderado no comer e no beber? Fiquei embriagado?",
+      "Usei tóxicos?",
+      "Injuriei os outros ou fui briguento?",
+      "Alimentei pensamentos ou desejos de vingança? Tive ódio?",
+      "Deixei de ajudar o próximo em suas necessidades materiais ou espirituais?",
+      "Denunciei injustamente alguém para tirar proveito?",
+      "Pus em perigo a vida espiritual ou material de alguém (convidar ao pecado, espancamento, ferimento)?",
+      "Provoquei, aconselhei ou participei direta ou indiretamente de um aborto?",
+      "Fiquei triste com o bem do próximo? Dei mau exemplo?"
+    ]
+  },
+  {
+    title: "6º e 9º Mandamentos — Não pecarás contra a castidade",
+    sins: [
+      "Faltei ao pudor? Desejei o adultério ou o cometi?",
+      "Cometi pecados impuros comigo mesmo (masturbação) ou com outros? Com animais?",
+      "Provoquei tentação ou desejos impuros por más leituras, filmes, bailes ou roupas indecentes?",
+      "Contei piadas imorais ou procurei ocasiões de pecado?",
+      "Tive relações sexuais pré-matrimoniais ou fora do matrimônio?",
+      "Tive liberdades excessivas no namoro?",
+      "Defendi a promiscuidade, relações pré-matrimoniais, divórcio ou aborto?"
+    ]
+  },
+  {
+    title: "7º e 10º Mandamentos — Não furtarás. Não cobiçarás o alheio",
+    sins: [
+      "Furtei alguma coisa (dinheiro de pais, amigos, parentes etc.)?",
+      "Cobicei ou aceitei/comprei coisas sabendo serem furtadas?",
+      "Fiquei com coisas achadas sem procurar o dono?",
+      "Causei prejuízo de propósito ou por negligência? Não paguei minhas dívidas?",
+      "Enganei o próximo nas compras e vendas? Cobrei juros excessivos?",
+      "Retive coisas que deveria dar ao próximo? Não reparei os danos causados?",
+      "Apelei injustamente para leis trabalhistas para obter indenizações indevidas?"
+    ]
+  },
+  {
+    title: "8º Mandamento — Não levantarás falso testemunho",
+    sins: [
+      "Menti? Falei mal dos outros? Difamei ou caluniei?",
+      "Fiz juízos falsos e temerários?",
+      "Semeei discórdias ou inimizades na família, no trabalho ou na política?",
+      "Exagerei as faltas dos outros? Dei falso testemunho?",
+      "Faço mexericos e fofocas? Gosto de ouvir falar mal dos outros?",
+      "Reparei o mal que fiz com calúnias ou mexericos?"
+    ]
+  },
+  {
+    title: "Mandamentos da Igreja",
+    sins: [
+      "Deixei de confessar-me ao menos uma vez por ano?",
+      "Confessei-me sem contrição sincera ou sem propósito de corrigir-me?",
+      "Não cumpri a penitência imposta pelo confessor?",
+      "Ocultei algum pecado grave na confissão?",
+      "Deixei de fazer a comunhão pascal?",
+      "Comunguei sabendo que estava em pecado grave?",
+      "Não ajudei a Igreja? Não participei com interesse da vida paroquial?",
+      "Não rezei pela Igreja? Não me engajei como apóstolo nem no dízimo?",
+      "Aproveitei-me ilicitamente ou desperdicei bens públicos? Soneguei impostos?"
+    ]
+  },
+  {
+    title: "Pecados Capitais",
+    sins: [
+      "Orgulho/Soberba: Sou orgulhoso, soberbo ou autossuficiente? Vaidoso? Busco chamar atenção sobre mim? Julgo-me indispensável?",
+      "Avareza: Como me comporto com os que têm salários insuficientes, fome, falta de moradia, desemprego, doença? Gasto inutilmente ao invés de empregar em causas boas?",
+      "Inveja: Sou invejoso, ciumento ou ressentido?",
+      "Avareza/Apego: Como uso o dinheiro? Vivo só na busca do prazer? Sou apegado às coisas?",
+      "Ira: Sou impaciente, raivoso ou vingativo? Tenho ódio?",
+      "Gula: Sou guloso? Vivo somente a nível de prazer (comida, bebida, tóxicos, TV, cigarro etc.)?",
+      "Preguiça: Sou preguiçoso? Omito meus deveres religiosos, sociais, familiares ou de trabalho? Meu lazer é honesto?",
+      "Luxúria: Como está minha sexualidade? Meus pensamentos? Tenho relacionamento errado? Sou permissivo?"
+    ]
+  }
+];
+
+// ── Build DOM ──
+const main = document.getElementById('main-content');
+// clear after intro card
+while(main.children.length > 1) main.removeChild(main.lastChild);
+
+DATA.forEach((sec, si) => {
+  const div = document.createElement('div');
+  div.className = 'section';
+
+  const hdr = document.createElement('div');
+  hdr.className = 'section-header';
+  hdr.textContent = sec.title + (sec.ref ? ` (${sec.ref})` : '');
+  div.appendChild(hdr);
+
+  const body = document.createElement('div');
+  body.className = 'section-body';
+
+  sec.sins.forEach((sin, i) => {
+    const id = `s_${si}_${i}`;
+    const item = document.createElement('div');
+    item.className = 'sin-item';
+    item.id = `item_${id}`;
+
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.className = 'sin-checkbox';
+    cb.id = id;
+    cb.addEventListener('change', () => onCheck(cb, id));
+
+    const lbl = document.createElement('label');
+    lbl.className = 'sin-text';
+    lbl.htmlFor = id;
+    lbl.textContent = sin;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'sin-count-wrap';
+
+    const countLbl = document.createElement('label');
+    countLbl.textContent = 'Vezes:';
+    countLbl.htmlFor = `c_${id}`;
+
+    const num = document.createElement('input');
+    num.type = 'number';
+    num.min = '1';
+    num.className = 'sin-count';
+    num.id = `c_${id}`;
+    num.value = '1';
+    num.disabled = true;
+    num.addEventListener('change', () => {
+      if(num.value < 1) num.value = 1;
+    });
+
+    wrap.appendChild(countLbl);
+    wrap.appendChild(num);
+
+    item.appendChild(cb);
+    item.appendChild(lbl);
+    item.appendChild(wrap);
+    body.appendChild(item);
+  });
+
+  div.appendChild(body);
+  main.appendChild(div);
+});
+
+function onCheck(cb, id) {
+  const item = document.getElementById(`item_${id}`);
+  const num = document.getElementById(`c_${id}`);
+  if(cb.checked) {
+    item.classList.add('marked');
+    num.disabled = false;
+    num.focus();
+  } else {
+    item.classList.remove('marked');
+    num.disabled = true;
+    num.value = 1;
+  }
+  updateCount();
+}
+
+function updateCount() {
+  const n = document.querySelectorAll('.sin-checkbox:checked').length;
+  document.getElementById('count').textContent = n;
+}
+
+// ── Reset ──
+function openReset() { document.getElementById('resetModal').classList.add('open'); }
+function closeReset() { document.getElementById('resetModal').classList.remove('open'); }
+function doReset() {
+  document.querySelectorAll('.sin-checkbox').forEach(cb => {
+    cb.checked = false;
+    const id = cb.id;
+    document.getElementById(`item_${id}`).classList.remove('marked');
+    const num = document.getElementById(`c_${id}`);
+    num.disabled = true;
+    num.value = 1;
+  });
+  document.getElementById('confDate').value = '';
+  updateCount();
+  closeReset();
+  showToast('Exame reiniciado');
+}
+
+// ── Toast ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── PDF ──
+function exportPDF() {
+  const checked = document.querySelectorAll('.sin-checkbox:checked');
+  if(checked.length === 0) {
+    showToast('Nenhum pecado marcado');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+  const margin = 20;
+  const pageW = 210;
+  const pageH = 297;
+  const contentW = pageW - margin * 2;
+  let y = margin;
+
+  // Colors
+  const darkBrown = [42, 26, 14];
+  const gold = [184, 150, 46];
+  const red = [139, 26, 26];
+  const cream = [250, 246, 238];
+  const parchment = [242, 232, 213];
+
+  function addPageIfNeeded(h) {
+    if(y + h > pageH - margin) {
+      doc.addPage();
+      y = margin;
+    }
+  }
+
+  // Background
+  doc.setFillColor(...cream);
+  doc.rect(0, 0, pageW, pageH, 'F');
+
+  // Header box
+  doc.setFillColor(...darkBrown);
+  doc.rect(0, 0, pageW, 40, 'F');
+
+  doc.setTextColor(...gold);
+  doc.setFont('times', 'bold');
+  doc.setFontSize(18);
+  doc.text('EXAME DE CONSCIÊNCIA', pageW / 2, 16, { align: 'center' });
+
+  doc.setFont('times', 'italic');
+  doc.setFontSize(10);
+  doc.setTextColor(196, 169, 122);
+  doc.text('Para a Santa Confissão', pageW / 2, 23, { align: 'center' });
+
+  // Gold line
+  doc.setDrawColor(...gold);
+  doc.setLineWidth(0.5);
+  doc.line(margin, 35, pageW - margin, 35);
+
+  y = 46;
+
+  // Date
+  const dateVal = document.getElementById('confDate').value;
+  if(dateVal) {
+    const [yyyy, mm, dd] = dateVal.split('-');
+    const dateStr = `${dd}/${mm}/${yyyy}`;
+    doc.setFont('times', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(...darkBrown);
+    doc.text('Data da Confissão:', margin, y);
+    doc.setFont('times', 'normal');
+    doc.text(dateStr, margin + 38, y);
+    y += 8;
+  }
+
+  // Count
+  doc.setFont('times', 'italic');
+  doc.setFontSize(9);
+  doc.setTextColor(100, 80, 60);
+  doc.text(`Total de pecados marcados: ${checked.length}`, margin, y);
+  y += 10;
+
+  doc.setDrawColor(...gold);
+  doc.setLineWidth(0.3);
+  doc.line(margin, y, pageW - margin, y);
+  y += 8;
+
+  // Group sins by section
+  const groups = {};
+  checked.forEach(cb => {
+    const parts = cb.id.split('_'); // s_si_i
+    const si = parseInt(parts[1]);
+    const i = parseInt(parts[2]);
+    const num = parseInt(document.getElementById(`c_${cb.id}`).value) || 1;
+    if(!groups[si]) groups[si] = { title: DATA[si].title, items: [] };
+    groups[si].items.push({ text: DATA[si].sins[i], qty: num });
+  });
+
+  Object.values(groups).forEach(group => {
+    addPageIfNeeded(16);
+
+    // Section header
+    doc.setFillColor(...darkBrown);
+    doc.rect(margin, y - 4, contentW, 8, 'F');
+    doc.setFont('times', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...gold);
+    const titleLines = doc.splitTextToSize(group.title, contentW - 4);
+    doc.text(titleLines[0], margin + 3, y + 0.5);
+    y += 10;
+
+    group.items.forEach(item => {
+      const lines = doc.splitTextToSize(item.text, contentW - 22);
+      const blockH = lines.length * 5 + 5;
+      addPageIfNeeded(blockH);
+
+      // Red cross bullet
+      doc.setTextColor(...red);
+      doc.setFontSize(11);
+      doc.text('†', margin + 1, y + 0.5);
+
+      doc.setFont('times', 'normal');
+      doc.setFontSize(9.5);
+      doc.setTextColor(...darkBrown);
+      lines.forEach((line, li) => {
+        doc.text(line, margin + 7, y + li * 5);
+      });
+
+      // Qty badge
+      doc.setFillColor(...parchment);
+      doc.setDrawColor(160, 120, 60);
+      doc.setLineWidth(0.3);
+      doc.roundedRect(pageW - margin - 16, y - 3.5, 16, 6, 1, 1, 'FD');
+      doc.setFont('times', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(...red);
+      doc.text(`${item.qty}×`, pageW - margin - 8, y + 0.5, { align: 'center' });
+
+      y += blockH - 2;
+
+      // Separator
+      doc.setDrawColor(210, 190, 160);
+      doc.setLineWidth(0.15);
+      doc.line(margin + 7, y, pageW - margin - 20, y);
+      y += 3;
+    });
+
+    y += 4;
+  });
+
+  // Footer on each page
+  const totalPages = doc.getNumberOfPages();
+  for(let p = 1; p <= totalPages; p++) {
+    doc.setPage(p);
+    doc.setFillColor(...darkBrown);
+    doc.rect(0, pageH - 14, pageW, 14, 'F');
+    doc.setFont('times', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(...gold);
+    doc.text('Meu Jesus misericordioso, dai-me a graça de uma boa confissão.', pageW / 2, pageH - 6, { align: 'center' });
+    doc.setTextColor(130, 100, 60);
+    doc.text(`${p} / ${totalPages}`, pageW - margin, pageH - 6, { align: 'right' });
+  }
+
+  const dateTag = dateVal ? `_${dateVal}` : '';
+  doc.save(`exame-consciencia${dateTag}.pdf`);
+  showToast('PDF gerado com sucesso!');
+}
+
+// Set today as default date
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('confDate').value = today;
+</script>
+</body>
+</html>
